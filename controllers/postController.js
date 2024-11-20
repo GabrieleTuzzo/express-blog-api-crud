@@ -2,25 +2,40 @@ const postsArray = require('../data/posts.js');
 
 function index(req, res) {
     let tag = req.query.tag;
-    let resArray = postsArray;
+    let responseObj = postsArray;
     if (tag) {
         let tagFormatted = tag.toLowerCase();
         tagFormatted = tagFormatted[0].toUpperCase() + tagFormatted.slice(1);
         // console.log(tagFormatted);
-        resArray = postsArray.filter((post) =>
+        responseObj = postsArray.filter((post) =>
             post.tags.includes(tagFormatted)
         );
     }
-    console.log('Lista dei post');
-    res.json(resArray);
+
+    if (responseObj.length === 0) {
+        res.status(404);
+        responseObj = {
+            error: 'No Posts found',
+            message: 'Nessun Post trovato :(',
+        };
+    }
+
+    res.json(responseObj);
 }
 
 function show(req, res) {
     const slug = req.params.slug;
     console.log('post con slug = ' + slug);
-    const post = postsArray.find((el) => el.slug === slug);
-    console.log(post);
-    res.json(post);
+    let responseObj = postsArray.find((el) => el.slug === slug);
+    if (!responseObj) {
+        res.status(404);
+        responseObj = {
+            error: 'No Posts found',
+            message: 'Nessun Post trovato :(',
+        };
+    }
+    console.log(responseObj);
+    res.json(responseObj);
 }
 
 function store(req, res) {
@@ -41,6 +56,12 @@ function modify(req, res) {
 function destroy(req, res) {
     const slug = req.params.slug;
     const postIndex = postsArray.findIndex((post) => post.slug === slug);
+    if (postIndex === -1) {
+        return res.status(404).json({
+            error: 'No Posts found',
+            message: 'Nessun Post trovato :(',
+        });
+    }
     postsArray.splice(postIndex, 1);
     console.log(postsArray);
     res.status(204).send();
