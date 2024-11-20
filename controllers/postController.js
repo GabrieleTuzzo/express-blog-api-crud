@@ -1,8 +1,18 @@
 const postsArray = require('../data/posts.js');
 
 function index(req, res) {
+    let tag = req.query.tag;
+    let resArray = postsArray;
+    if (tag) {
+        let tagFormatted = tag.toLowerCase();
+        tagFormatted = tagFormatted[0].toUpperCase() + tagFormatted.slice(1);
+        // console.log(tagFormatted);
+        resArray = postsArray.filter((post) =>
+            post.tags.includes(tagFormatted)
+        );
+    }
     console.log('Lista dei post');
-    res.json(postsArray);
+    res.json(resArray);
 }
 
 function show(req, res) {
