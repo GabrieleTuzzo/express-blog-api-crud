@@ -10,7 +10,7 @@ function show(req, res) {
     console.log('post con slug = ' + slug);
     const post = postsArray.find((el) => el.slug === slug);
     console.log(post);
-    res.send(post);
+    res.json(post);
 }
 
 function store(req, res) {
@@ -29,8 +29,11 @@ function modify(req, res) {
 }
 
 function destroy(req, res) {
-    console.log('Post eliminato');
-    res.send('Post eliminato');
+    const slug = req.params.slug;
+    const postIndex = postsArray.findIndex((post) => post.slug === slug);
+    postsArray.splice(postIndex, 1);
+    console.log(postsArray);
+    res.status(204).send();
 }
 
 module.exports = { index, show, store, update, modify, destroy };
