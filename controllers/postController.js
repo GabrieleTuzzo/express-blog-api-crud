@@ -24,9 +24,20 @@ function index(req, res) {
 }
 
 function show(req, res) {
-    const slug = req.params.slug;
+    let slug = req.params.slug;
     console.log('post con slug = ' + slug);
-    let responseObj = postsArray.find((el) => el.slug === slug);
+    let responseObj;
+
+    if (isNaN(parseInt(slug))) {
+        // console.log('isNaN true');
+        slug = slug.toLowerCase();
+        responseObj = postsArray.find((post) => post.slug === slug);
+    } else {
+        // console.log('isNaN false');
+        slug = parseInt(slug);
+        responseObj = postsArray.find((post) => post.id === slug);
+    }
+
     if (!responseObj) {
         res.status(404);
         responseObj = {
@@ -54,8 +65,19 @@ function modify(req, res) {
 }
 
 function destroy(req, res) {
-    const slug = req.params.slug;
-    const postIndex = postsArray.findIndex((post) => post.slug === slug);
+    let slug = req.params.slug;
+    let postIndex;
+
+    if (isNaN(parseInt(slug))) {
+        // console.log('isNaN true');
+        slug = slug.toLowerCase();
+        postIndex = postsArray.findIndex((post) => post.slug === slug);
+    } else {
+        // console.log('isNaN false');
+        slug = parseInt(slug);
+        postIndex = postsArray.findIndex((post) => post.id === slug);
+    }
+
     if (postIndex === -1) {
         return res.status(404).json({
             error: 'No Posts found',
