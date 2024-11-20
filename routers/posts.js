@@ -1,40 +1,18 @@
 const express = require('express');
-const postsArray = require('../data/posts.js');
+const postController = require('../controllers/postController');
 const router = express.Router();
 
-// Index
-router.get('/', function (req, res) {
-    console.log('Lista dei post');
-    res.json(postsArray);
-});
+// CRUD requests
+router.get('/', postController.index);
 
-// Show
-router.get('/:slug', function (req, res) {
-    const slug = req.params.slug;
-    console.log('post con slug = ' + slug);
-    const post = postsArray.find((el) => el.slug === slug);
-    console.log(post);
-    res.send(post);
-});
+router.get('/:slug', postController.show);
 
-// Store
-router.post('/', function (req, res) {
-    console.log('Nuovo post creato');
-});
+router.post('/', postController.store);
 
-// Update
-router.put('/:slug', function (req, res) {
-    console.log('Post modificato');
-});
+router.put('/:slug', postController.update);
 
-// Modify
-router.patch('/:slug', function (req, res) {
-    console.log('Post modificato parzialmente');
-});
+router.patch('/:slug', postController.modify);
 
-// Destroy
-router.delete('/:slug', function (req, res) {
-    console.log('Post eliminato');
-});
+router.delete('/:slug', postController.destroy);
 
 module.exports = router;
