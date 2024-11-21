@@ -66,6 +66,9 @@ function update(req, res) {
     let slug = req.params.slug;
     let newDataObj = req.body;
     let responseObj;
+    const newSlug = utilityFunctions.getSlug(newDataObj.title);
+
+    newDataObj.slug = newSlug;
 
     for (const key in newDataObj) {
         if (!newDataObj[key]) {
@@ -86,6 +89,8 @@ function update(req, res) {
         });
     }
 
+    newDataObj.id = responseObj.id;
+
     for (const key in responseObj) {
         responseObj[key] = newDataObj[key];
     }
@@ -95,6 +100,20 @@ function update(req, res) {
 }
 
 function modify(req, res) {
+    let slug = req.params.slug;
+    let newDataObj = req.body;
+    let responseObj;
+
+    slug = slug.toLowerCase();
+    responseObj = utilityFunctions.findByIdOrSlug(postsArray, slug);
+
+    if (!responseObj) {
+        return res.status(404).json({
+            error: 'No Posts found',
+            message: 'Nessun Post trovato :(',
+        });
+    }
+
     console.log('Post modificato');
     res.send('Post modificato');
 }
