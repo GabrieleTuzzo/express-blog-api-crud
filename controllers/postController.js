@@ -1,23 +1,15 @@
 const postsArray = require('../data/posts.js');
+const utilityFunctions = require('../utilities/functions.js');
 
 function index(req, res) {
     let tag = req.query.tag;
     let responseObj = postsArray;
     if (tag) {
-        let tagFormatted = tag.toLowerCase();
-        tagFormatted = tagFormatted[0].toUpperCase() + tagFormatted.slice(1);
+        let tagFormatted = utilityFunctions.capitalizeString(tag);
         // console.log(tagFormatted);
         responseObj = postsArray.filter((post) =>
             post.tags.includes(tagFormatted)
         );
-    }
-
-    if (responseObj.length === 0) {
-        res.status(404);
-        responseObj = {
-            error: 'No Posts found',
-            message: 'Nessun Post trovato :(',
-        };
     }
 
     res.json(responseObj);
@@ -28,15 +20,11 @@ function show(req, res) {
     console.log('post con slug = ' + slug);
     let responseObj;
 
-    if (isNaN(parseInt(slug))) {
-        // console.log('isNaN true');
-        slug = slug.toLowerCase();
-        responseObj = postsArray.find((post) => post.slug === slug);
-    } else {
-        // console.log('isNaN false');
-        slug = parseInt(slug);
-        responseObj = postsArray.find((post) => post.id === slug);
-    }
+    // console.log('isNaN true');
+    slug = slug.toLowerCase();
+    responseObj = postsArray.find(
+        (post) => post.slug === slug || post.id === parseInt(slug)
+    );
 
     if (!responseObj) {
         res.status(404);
@@ -68,15 +56,10 @@ function destroy(req, res) {
     let slug = req.params.slug;
     let postIndex;
 
-    if (isNaN(parseInt(slug))) {
-        // console.log('isNaN true');
-        slug = slug.toLowerCase();
-        postIndex = postsArray.findIndex((post) => post.slug === slug);
-    } else {
-        // console.log('isNaN false');
-        slug = parseInt(slug);
-        postIndex = postsArray.findIndex((post) => post.id === slug);
-    }
+    slug = slug.toLowerCase();
+    postIndex = postsArray.findIndex(
+        (post) => post.slug === slug || post.id === parseInt(slug)
+    );
 
     if (postIndex === -1) {
         return res.status(404).json({
