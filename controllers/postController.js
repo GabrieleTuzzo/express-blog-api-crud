@@ -38,8 +38,31 @@ function show(req, res) {
 }
 
 function store(req, res) {
-    console.log('Nuovo post creato');
-    res.send('Post creato');
+    let receivedObj = req.body;
+    let isDataValid = true;
+
+    for (const key in receivedObj) {
+        if (!receivedObj[key]) {
+            res.status(422);
+            receivedObj = {
+                error: 'Bad data received',
+                message: 'Bad data received',
+            };
+            isDataValid = false;
+        }
+        break;
+    }
+
+    if (isDataValid) {
+        const newSlug = utilityFunctions.getSlug(receivedObj.title);
+        receivedObj.slag = newSlug;
+
+        postsArray.push(receivedObj);
+
+        console.log('Nuovo post creato');
+    }
+
+    res.status(201).json(receivedObj);
 }
 
 function update(req, res) {

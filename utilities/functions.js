@@ -4,4 +4,10 @@ function capitalizeString(inputString) {
     return inputString;
 }
 
-module.exports = { capitalizeString };
+function getSlug(title) {
+    let slug = title.toLowerCase();
+    slug = slug.replaceAll(' ', '-');
+    return slug;
+}
+
+module.exports = { capitalizeString, getSlug };
