@@ -103,26 +103,31 @@ function modify(req, res) {
     let slug = req.params.slug;
     let newDataObj = req.body;
     let responseObj;
+    let isErrorThrown = false;
 
     slug = slug.toLowerCase();
     responseObj = utilityFunctions.findByIdOrSlug(postsArray, slug);
 
     if (!responseObj) {
-        return res.status(404).json({
+        res.status(404);
+        responseObj = {
             error: 'No Posts found',
             message: 'Nessun Post trovato :(',
-        });
+        };
+        isErrorThrown = true;
     }
 
-    for (const key in responseObj) {
-        if (newDataObj[key]) {
-            responseObj[key] = newDataObj[key];
+    if (!isErrorThrown) {
+        for (const key in responseObj) {
+            if (newDataObj[key]) {
+                responseObj[key] = newDataObj[key];
+            }
         }
+
+        responseObj.slug = utilityFunctions.getSlug(responseObj.title);
+
+        console.log('Post modificato');
     }
-
-    responseObj.slug = utilityFunctions.getSlug(responseObj.title);
-
-    console.log('Post modificato');
     res.json(responseObj);
 }
 
