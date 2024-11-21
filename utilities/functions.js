@@ -10,4 +10,11 @@ function getSlug(title) {
     return slug;
 }
 
-module.exports = { capitalizeString, getSlug };
+function findByIdOrSlug(array, slug) {
+    const returnArray = array.find(
+        (post) => post.slug === slug || post.id === parseInt(slug)
+    );
+    return returnArray;
+}
+
+module.exports = { capitalizeString, getSlug, findByIdOrSlug };

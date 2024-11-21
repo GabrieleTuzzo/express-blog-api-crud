@@ -20,11 +20,8 @@ function show(req, res) {
     console.log('post con slug = ' + slug);
     let responseObj;
 
-    // console.log('isNaN true');
     slug = slug.toLowerCase();
-    responseObj = postsArray.find(
-        (post) => post.slug === slug || post.id === parseInt(slug)
-    );
+    responseObj = utilityFunctions.findByIdOrSlug(postsArray, slug);
 
     if (!responseObj) {
         res.status(404);
@@ -55,7 +52,7 @@ function store(req, res) {
 
     if (isDataValid) {
         const newSlug = utilityFunctions.getSlug(receivedObj.title);
-        receivedObj.slag = newSlug;
+        receivedObj.slug = newSlug;
 
         postsArray.push(receivedObj);
 
@@ -66,8 +63,35 @@ function store(req, res) {
 }
 
 function update(req, res) {
+    let slug = req.params.slug;
+    let newDataObj = req.body;
+    let responseObj;
+
+    for (const key in newDataObj) {
+        if (!newDataObj[key]) {
+            return res.status(422).json({
+                error: 'Bad data received',
+                message: 'Bad data received',
+            });
+        }
+    }
+
+    slug = slug.toLowerCase();
+    responseObj = utilityFunctions.findByIdOrSlug(postsArray, slug);
+
+    if (!responseObj) {
+        return res.status(404).json({
+            error: 'No Posts found',
+            message: 'Nessun Post trovato :(',
+        });
+    }
+
+    for (const key in responseObj) {
+        responseObj[key] = newDataObj[key];
+    }
+
     console.log('Post aggiornato');
-    res.send('Post aggiornato');
+    res.json(responseObj);
 }
 
 function modify(req, res) {
