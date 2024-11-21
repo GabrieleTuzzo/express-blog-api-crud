@@ -69,7 +69,7 @@ function destroy(req, res) {
     }
     postsArray.splice(postIndex, 1);
     console.log(postsArray);
-    res.status(204).send();
+    res.sendStatus(204);
 }
 
 module.exports = { index, show, store, update, modify, destroy };
