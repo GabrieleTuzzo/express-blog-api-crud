@@ -114,8 +114,16 @@ function modify(req, res) {
         });
     }
 
+    for (const key in responseObj) {
+        if (newDataObj[key]) {
+            responseObj[key] = newDataObj[key];
+        }
+    }
+
+    responseObj.slug = utilityFunctions.getSlug(responseObj.title);
+
     console.log('Post modificato');
-    res.send('Post modificato');
+    res.json(responseObj);
 }
 
 function destroy(req, res) {
