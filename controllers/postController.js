@@ -16,20 +16,8 @@ function index(req, res) {
 }
 
 function show(req, res) {
-    let slug = req.params.slug;
-    console.log('post con slug = ' + slug);
-    let responseObj;
+    let responseObj = res.responseObj.element;
 
-    slug = slug.toLowerCase();
-    responseObj = utilityFunctions.findByIdOrSlug(postsArray, slug);
-
-    if (!responseObj) {
-        res.status(404);
-        responseObj = {
-            error: 'No Posts found',
-            message: 'Nessun Post trovato :(',
-        };
-    }
     console.log(responseObj);
     res.json(responseObj);
 }
@@ -63,9 +51,8 @@ function store(req, res) {
 }
 
 function update(req, res) {
-    let slug = req.params.slug;
     let newDataObj = req.body;
-    let responseObj;
+    let responseObj = res.responseObj.element;
     const newSlug = utilityFunctions.getSlug(newDataObj.title);
 
     newDataObj.slug = newSlug;
@@ -79,16 +66,6 @@ function update(req, res) {
         }
     }
 
-    slug = slug.toLowerCase();
-    responseObj = utilityFunctions.findByIdOrSlug(postsArray, slug);
-
-    if (!responseObj) {
-        return res.status(404).json({
-            error: 'No Posts found',
-            message: 'Nessun Post trovato :(',
-        });
-    }
-
     newDataObj.id = responseObj.id;
 
     for (const key in responseObj) {
@@ -100,24 +77,10 @@ function update(req, res) {
 }
 
 function modify(req, res) {
-    let slug = req.params.slug;
     let newDataObj = req.body;
-    let responseObj;
-    let isErrorThrown = false;
+    let responseObj = res.responseObj.element;
 
-    slug = slug.toLowerCase();
-    responseObj = utilityFunctions.findByIdOrSlug(postsArray, slug);
-
-    if (!responseObj) {
-        res.status(404);
-        responseObj = {
-            error: 'No Posts found',
-            message: 'Nessun Post trovato :(',
-        };
-        isErrorThrown = true;
-    }
-
-    if (!isErrorThrown) {
+    if (req.body && typeof req.body === 'object') {
         for (const key in responseObj) {
             if (newDataObj[key]) {
                 responseObj[key] = newDataObj[key];
@@ -132,20 +95,7 @@ function modify(req, res) {
 }
 
 function destroy(req, res) {
-    let slug = req.params.slug;
-    let postIndex;
-
-    slug = slug.toLowerCase();
-    postIndex = postsArray.findIndex(
-        (post) => post.slug === slug || post.id === parseInt(slug)
-    );
-
-    if (postIndex === -1) {
-        return res.status(404).json({
-            error: 'No Posts found',
-            message: 'Nessun Post trovato :(',
-        });
-    }
+    let postIndex = res.responseObj.index;
     postsArray.splice(postIndex, 1);
     console.log(postsArray);
     res.sendStatus(204);
