@@ -45,9 +45,10 @@ function store(req, res) {
         postsArray.push(receivedObj);
 
         console.log('Nuovo post creato');
+        res.status(201);
     }
 
-    res.status(201).json(receivedObj);
+    res.json(receivedObj);
 }
 
 function update(req, res) {
